@@ -1,0 +1,98 @@
+This project plan is designed to facilitate a "vibe coding" approach, providing high-level architectural direction and specific technical prompts for an AI-assisted development workflow. We will use the Arcade library for Python, as its GPU-accelerated sprite batching is superior to Pygame for handling the 15,000+ entities required for a full-scale tower.
+
+Phase 1: Foundation & The Spatial Grid
+Goal: Establish the world coordinate system and the rendering window.
+
+Step 1: Environment & Skeleton
+
+Prompt: "Create a Python project using the Arcade library. Set up a main window titled 'Tower Simulator' with a resolution of 1280x720. Implement a basic MyGame class inheriting from arcade.View with on_draw and on_update methods. Ensure the background is a 'Sky Blue' color."
+
+Step 2: The 375-Segment Grid
+
+Prompt: "Implement a coordinate system where the world is 375 'segments' wide and 110 'levels' high. Create a WorldMap class that manages a 2D grid. Each level is 32 pixels high and each segment is 8 pixels wide. Implement a camera system that allows the user to scroll vertically and horizontally using the WASD keys."
+
+Step 3: Empty Ground & Lobby B1
+
+Prompt: "In the on_draw method, render a brown rectangle for the ground starting at Level 0. Automatically generate a 4-segment Lobby on Level 1 (center of the map) upon startup. Draw a simple grid overlay that only appears when the user is in 'Construction Mode'."
+
+Phase 2: Entity Data & Registry
+Goal: Define the "DNA" of every building block in the game.
+
+Step 4: The Static Data Registry
+
+Prompt: "Create a constants.py file with a dictionary named ENTITY_DATA. Use the following values for the initial set of rooms:
+
+Lobby: {cost: 500/seg, width: 1-4, type: 'transit', maintenance: 3/seg}
+
+Office: {cost: 40000, width: 9, capacity: 6, income: 4000/qtr, type: 'work'}
+
+Condo: {cost: 80,000, width: 16, capacity: 3, sale_price: 150000, type: 'housing'}
+
+FastFood: {cost: 100000, width: 16, type: 'commercial', daily_income: 3000}
+
+Elevator: {shaft_cost: 200000, car_cost: 80000, width: 4, type: 'transport'}"
+
+Phase 3: UI & Construction Engine
+Goal: Enable the player to interact with the world and build.
+
+Step 5: The Tool Window (HUD)
+
+Prompt: "Create a UI overlay using arcade.gui. Add a 'Toolbox' on the left side with buttons for 'Office', 'Condo', 'Lobby', and 'Elevator'. Add a 'World Details' bar at the top displaying 'Funds: $2,000,000', 'Population: 0', and 'Time: 05:00 AM'."
+
+Step 6: Placement & Validation Logic
+
+Prompt: "Implement a 'Ghost Room' that follows the mouse cursor when a tool is selected. The ghost must snap to the 375x110 grid. Implement a can_place(x, y, room_type) function:
+
+Offices and Condos cannot be placed underground (below Level 1).
+
+Rooms cannot overlap existing rooms.
+
+A room must be placed on a valid 'Floor' or 'Lobby' segment."
+
+Step 7: The Building Action
+
+Prompt: "When the user clicks, deduct the cost from the total funds and instantiate a RoomEntity. Add this entity to an arcade.SpriteList for efficient rendering."
+
+Phase 4: Time & Economics Simulation
+Goal: Make the tower "alive" with a ticking clock and financial cycles.
+
+Step 8: The 12-Day Annual Clock
+
+Prompt: "Create a TimeManager class. 1 game minute = 0.5 real seconds. Implement a cycle: Weekday 1, Weekday 2, Weekend. 4 quarters per year. Update the 'World Details' UI to show the current day and quarter."
+
+Step 9: Revenue & Maintenance Triggers
+
+Prompt: "Implement a financial loop. At 9:00 AM on Weekday 1, collect quarterly rent from all 'Office' entities. At the end of every Quarter, deduct maintenance costs for all Elevators and Lobbies. If funds drop below $0, display a 'Bankruptcy Warning'."
+
+Phase 5: The Elevator & NPC Engine (Advanced)
+Goal: The technical core—getting Sims to move.
+
+Step 10: The Sim Behavioral State Machine
+
+Prompt: "Create a Sim class. At 9:00 AM, spawn 6 Sims for every 'Office' unit at the Level 1 Lobby. Their goal is to reach their assigned office. Sims have a stress variable that increases by 1 for every second they spend waiting at an elevator bank."
+
+Step 11: SCAN Elevator Dispatching
+
+Prompt: "Implement the Elevator logic. An ElevatorShaft manages up to 8 Car sprites. Use the SCAN algorithm:
+
+If a Car is moving UP, it stops at every floor with an 'UP' request or a passenger wanting that floor.
+
+When no more UP requests exist above, it switches to DOWN.
+
+When idle, the Car returns to its designated 'Home Floor'."
+
+Step 12: Pathfinding (Stair/Escalator Logic)
+
+Prompt: "Implement a simple graph-based pathfinder. A Sim's path can have a maximum of 4 'legs' (e.g., Lobby -> Elevator -> Skylobby -> Stair -> Office). If a destination is more than 4 legs away, the Sim cannot find the path and their stress increases instantly."
+
+Predefined Entity Data Table
+Entity,Cost,Segments,Height,Capacity,Logic Type
+Lobby,$500/seg,1-375,1,Infinite,Pathfinding Hub
+Office,"$40,000",9,1,6,Rent (Quarterly)
+Condo,"$80,000",16,1,3,Sale (One-time)
+Single Hotel,"$20,000",4,1,1,Daily Occupancy
+Fast Food,"$100,000",16,1,50,Service Income
+Cinema,"$500,000",31,2,120,Event Income
+Std Elevator,"$200,000",4,1-30,21,Transit (SCAN)
+Stairs,"$5,000",8,2,Infinite,Transit (No Stress)
+Escalator,"$20,000",8,2,Infinite,Transit (Preferred)
