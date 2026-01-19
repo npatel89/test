@@ -75,15 +75,19 @@ class Camera:
     def world_to_screen(self, world_x: int, world_y: int) -> tuple[int, int]:
         """Convert world coordinates to screen coordinates"""
         screen_x = world_x - self.x
-        # Invert Y so higher levels appear higher on screen (level 0 at bottom)
-        screen_y = self.screen_height - (world_y - self.y + Grid.PIXELS_PER_LEVEL)
+        # Invert Y: world_y increases upward, screen_y increases downward
+        # Camera looks from (self.x, self.y) at top-left of view
+        # Level 0 = 0 pixels, higher levels = higher pixel values
+        # But on screen, top is 0 and bottom is 720
+        # So: screen_y = (camera_bottom - world_y) = (self.y + screen_height) - world_y
+        screen_y = (self.y + self.screen_height) - world_y
         return screen_x, screen_y
 
     def screen_to_world(self, screen_x: int, screen_y: int) -> tuple[int, int]:
         """Convert screen coordinates to world coordinates"""
         world_x = screen_x + self.x
-        # Invert Y back to world coordinates
-        world_y = (self.screen_height - screen_y) + self.y - Grid.PIXELS_PER_LEVEL
+        # Invert Y back: world_y = (self.y + screen_height) - screen_y
+        world_y = (self.y + self.screen_height) - screen_y
         return world_x, world_y
 
     def get_bounds(self) -> tuple[int, int, int, int]:

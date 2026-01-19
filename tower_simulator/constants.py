@@ -23,6 +23,8 @@ ENTITY_DATA = {
         'sale_price': 150000,  # Base sale price
         'sale_price_max': 200000,
         'sale_price_min': 50000,
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'one_time',
         'maintenance': 0,
         'notes': 'One-time income on sale. High risk of abandonment if tower conditions worsen.'
@@ -39,6 +41,8 @@ ENTITY_DATA = {
         'cost': 40000,
         'color': (100, 150, 200),
         'capacity': 6,  # Sims per unit
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'quarterly_rent',
         'income_min': 2000,
         'income_max': 15000,
@@ -59,6 +63,8 @@ ENTITY_DATA = {
         'color': (200, 100, 100),
         'capacity': 1,  # Sims per unit
         'rating_required': 2,
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_occupancy',
         'income_min': 500,
         'income_max': 3000,
@@ -75,6 +81,8 @@ ENTITY_DATA = {
         'color': (200, 100, 100),
         'capacity': 2,  # Sims per unit
         'rating_required': 3,
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_occupancy',
         'income_min': 800,
         'income_max': 4500,
@@ -91,6 +99,8 @@ ENTITY_DATA = {
         'color': (200, 100, 100),
         'capacity': 2,  # Sims per unit
         'rating_required': 3,
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_occupancy',
         'income_min': 1500,
         'income_max': 9000,
@@ -109,6 +119,8 @@ ENTITY_DATA = {
         'cost': 100000,
         'color': (255, 200, 100),
         'capacity': 50,  # Sims
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_service',
         'income_red': -3000,
         'income_yellow': 2000,
@@ -125,6 +137,8 @@ ENTITY_DATA = {
         'cost': 200000,
         'color': (200, 100, 50),
         'capacity': 100,  # Sims
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_service',
         'income_red': -6000,
         'income_yellow': 4000,
@@ -141,6 +155,8 @@ ENTITY_DATA = {
         'cost': 100000,
         'color': (200, 180, 150),
         'capacity': 100,  # Sims
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_rent',
         'income_min': 4000,
         'income_max': 20000,
@@ -159,6 +175,8 @@ ENTITY_DATA = {
         'cost': 500000,
         'color': (100, 100, 200),
         'capacity': 120,  # Sims
+        'placement_level_min': 1,
+        'placement_level_max': 108,
         'income_type': 'daily_flat',
         'income_base': 10000,
         'maintenance': 0,
@@ -176,7 +194,8 @@ ENTITY_DATA = {
         'cost': 3000000,
         'color': (150, 100, 200),
         'capacity': 0,  # No capacity
-        'placement_level': 100,  # Level 100 only
+        'placement_level_min': 100,
+        'placement_level_max': 100,
         'rating_required': 5,
         'income_type': 'none',
         'maintenance': 0,
@@ -209,6 +228,8 @@ ENTITY_DATA = {
         'cost_per_segment': 500,
         'color': (150, 100, 50),
         'capacity': None,  # Infinite
+        'placement_level_min': 0,
+        'placement_level_max': 0,
         'income_type': 'none',
         'maintenance_per_segment': 3,
         'notes': 'Entry point for Sims. Level 0 only. Must be continuously connected (no gaps).',
@@ -219,11 +240,14 @@ ENTITY_DATA = {
         'type': 'transit',
         'width': 4,  # segments
         'height': None,  # Variable height
+        'cost': 200000,
         'cost_per_shaft': 200000,
         'cost_per_car': 80000,
         'color': (100, 100, 100),
         'capacity': 8,  # Cars max per shaft
         'cars_per_shaft_default': 1,
+        'placement_level_min': -5,
+        'placement_level_max': 109,
         'income_type': 'none',
         'maintenance_per_car': 10000,  # Quarterly
         'max_shaft_count': 24,  # Hard limit
@@ -239,6 +263,8 @@ ENTITY_DATA = {
         'color': (180, 140, 100),
         'capacity': None,  # Infinite
         'stress_generation': 0,
+        'placement_level_min': -5,
+        'placement_level_max': -1,
         'income_type': 'none',
         'maintenance': 0,
         'notes': 'Generates no stress. Limited to 64 units per tower.'
@@ -254,6 +280,8 @@ ENTITY_DATA = {
         'capacity': None,  # Infinite
         'stress_generation': 0,
         'preferred_range': 7,  # Levels (5 practical)
+        'placement_level_min': -5,
+        'placement_level_max': -1,
         'income_type': 'none',
         'maintenance': 0,
         'notes': 'Preferred for short trips. Max 64 units per tower.'
@@ -273,6 +301,8 @@ ENTITY_DATA = {
         'rooms_per_housekeeper': 19,
         'work_hours_end': 17,  # 5:00 PM
         'no_new_work_after': 16.5,  # 4:30 PM
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'none',
         'maintenance': 0,
         'notes': 'Required for hotel operations. Max 6 floors per service elevator.'
@@ -286,6 +316,8 @@ ENTITY_DATA = {
         'cost': 50000,
         'color': (150, 150, 150),
         'rating_required': 2,
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'none',
         'maintenance': 0,
         'notes': 'Handles bomb threats and other events.'
@@ -299,6 +331,8 @@ ENTITY_DATA = {
         'cost': 100000,
         'color': (255, 150, 150),
         'rating_required': 3,
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'none',
         'maintenance': 0,
         'notes': 'Required by 3+ star offices. Prevents worker dissatisfaction.'
@@ -312,6 +346,8 @@ ENTITY_DATA = {
         'cost': 100000,
         'color': (200, 100, 200),
         'capacity': 200,  # Sims
+        'placement_level_min': 1,
+        'placement_level_max': 109,
         'income_type': 'daily_flat',
         'income_flat': 20000,
         'maintenance': 0,

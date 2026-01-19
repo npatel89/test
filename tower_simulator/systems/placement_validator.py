@@ -49,11 +49,13 @@ class PlacementValidator:
 
     def _is_within_bounds(self, coordinate: Coordinate, width: int, height: int) -> bool:
         """Check if room fits within grid bounds"""
+        from tower_simulator.world.coordinate import GRID_MIN_LEVEL, GRID_MAX_LEVEL
+        
         seg_end = coordinate.segment + width
         level_end = coordinate.level + height
         
         return (0 <= coordinate.segment and seg_end <= Grid.WIDTH and
-                0 <= coordinate.level and level_end <= Grid.HEIGHT)
+                GRID_MIN_LEVEL <= coordinate.level and level_end <= GRID_MAX_LEVEL + 1)
 
     def _check_level_restrictions(self, room_type: str, coordinate: Coordinate, height: int) -> bool:
         """Check placement restrictions based on room type and level"""
@@ -132,13 +134,17 @@ class PlacementValidator:
     def _check_valid_placement(self, coordinate: Coordinate, width: int, height: int) -> bool:
         """
         Check that room is placed on a valid surface.
-        Valid surfaces: Ground (level 0), or on top of existing rooms
+        Valid surfaces: Basement levels, Level 0 (lobby floor), or on top of existing rooms
         """
+        # Basement levels (-5 to -1) don't need support - they're on bedrock
+        if -5 <= coordinate.level <= -1:
+            return True
+        
         # Level 0 (lobby floor) is always valid
         if coordinate.level == 0:
             return True
         
-        # Check if there's a room directly below this placement
+        # All other levels: check if there's a room directly below this placement
         seg_start = coordinate.segment
         seg_end = coordinate.segment + width
         
