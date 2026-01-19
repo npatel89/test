@@ -107,16 +107,104 @@ class TowerSimulatorGame:
         self.selected_tool = tool_id
 
     def _place_room(self):
-        """Place the current ghost room if valid"""
-        if not self.ghost_room or not self.ghost_room.can_place:
+        """
+        Place the current ghost room if valid.
+        Handles fund deduction, entity creation, and game state updates.
+        """
+        # Validation checks
+        if not self.ghost_room:
             return
         
-        # TODO: Create actual room entity and place it
-        # For now just log it
-        print(f"Placed {self.ghost_room.room_type} at {self.ghost_room.coordinate}")
+        if not self.ghost_room.can_place:
+            print(f"❌ Cannot place {self.ghost_room.room_type} at {self.ghost_room.coordinate}")
+            return
         
-        # Update validator after placement
+        # Get room type and entity data
+        room_type = self.ghost_room.room_type
+        entity_data = ENTITY_DATA.get(room_type)
+        
+        if not entity_data:
+            print(f"❌ Unknown room type: {room_type}")
+            return
+        
+        # Calculate cost
+        cost = self._calculate_room_cost(room_type, entity_data)
+        
+        # Check if player has enough funds
+        if self.funds < cost:
+            print(f"❌ Insufficient funds! Cost: ${cost:,}, Available: ${self.funds:,}")
+            return
+        
+        # Create the actual room entity
+        new_room = self._create_room_entity(room_type, entity_data)
+        
+        if not new_room:
+            print(f"❌ Failed to create room entity for {room_type}")
+            return
+        
+        # Deduct funds
+        self.funds -= cost
+        print(f"✅ Placed {room_type.upper()} at {new_room.coordinate}")
+        print(f"   Cost: ${cost:,} | Remaining funds: ${self.funds:,}")
+        
+        # Add room to game world
+        self.rooms.append(new_room)
+        
+        # Update validator with new room list
         self.validator.update_rooms(self.rooms)
+        
+        # Clear ghost room and selection
+        self.ghost_room = None
+        self.selected_tool = None
+
+    def _calculate_room_cost(self, room_type: str, entity_data: dict) -> int:
+        """
+        Calculate the cost to place a room.
+        Some items have per-segment costs (lobby), others have fixed costs.
+        """
+        # Items with per-segment cost
+        if room_type == 'lobby':
+            return entity_data.get('cost_per_segment', 500) * self.ghost_room.width
+        
+        if room_type == 'elevator_shaft':
+            # Cost: shaft cost + per-car cost
+            shaft_cost = entity_data.get('cost_per_shaft', 200000)
+            car_cost = entity_data.get('cost_per_car', 80000)
+            default_cars = entity_data.get('cars_per_shaft_default', 1)
+            return shaft_cost + (car_cost * default_cars)
+        
+        # Standard fixed cost
+        return entity_data.get('cost', 0)
+
+    def _create_room_entity(self, room_type: str, entity_data: dict) -> RoomEntity:
+        """
+        Create the appropriate room entity based on type.
+        Uses factory pattern for different room types.
+        """
+        try:
+            # Lobby - special handling
+            if room_type == 'lobby':
+                return Lobby(
+                    coordinate=self.ghost_room.coordinate,
+                    width=self.ghost_room.width
+                )
+            
+            # Standard room entity
+            color = entity_data.get('color', (200, 200, 200))
+            cost = self._calculate_room_cost(room_type, entity_data)
+            
+            return RoomEntity(
+                coordinate=self.ghost_room.coordinate,
+                width=self.ghost_room.width,
+                height=self.ghost_room.height,
+                room_type=room_type,
+                cost=cost,
+                color=color
+            )
+        
+        except Exception as e:
+            print(f"Error creating room entity: {e}")
+            return None
 
     def _update_ghost_room_position(self):
         """Update ghost room position based on current mouse position"""

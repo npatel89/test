@@ -2,7 +2,7 @@
 Camera system for viewport management
 """
 import pygame
-from tower_simulator.world.coordinate import Grid, GRID_MIN_LEVEL, GRID_MAX_LEVEL, PIXELS_PER_LEVEL
+from tower_simulator.world.coordinate import Grid, GRID_MIN_LEVEL, GRID_MAX_LEVEL, PIXELS_PER_LEVEL, PIXELS_PER_SEGMENT
 
 
 class Camera:
@@ -13,19 +13,27 @@ class Camera:
         self.screen_width = screen_width
         self.screen_height = screen_height
         
-        # Camera position (top-left corner in world pixels)
-        self.x = 0
-        self.y = 0
-        
         # Grid bounds in pixels
         # X: 0 to (375 * 8) = 3000 pixels
         # Y: (-5 * 32) to (109 * 32) = -160 to 3488 pixels
-        self.grid_width = Grid.WIDTH * PIXELS_PER_LEVEL
+        self.grid_width = Grid.WIDTH * PIXELS_PER_SEGMENT
         self.grid_min_y = GRID_MIN_LEVEL * PIXELS_PER_LEVEL  # -160 for level -5
         self.grid_max_y = GRID_MAX_LEVEL * PIXELS_PER_LEVEL  # 3488 for level 109
         
         # Scroll speed in pixels per frame
         self.scroll_speed = 16
+        
+        # Initialize camera: centered horizontally, starting at basement (bottom) vertically
+        # Center horizontally
+        total_grid_width = self.grid_width
+        center_x = (total_grid_width - screen_width) // 2
+        
+        # Start at basement level (bottom of tower)
+        # This shows level 0 near the bottom and basement levels visible
+        start_y = self.grid_min_y
+        
+        self.x = max(0, center_x)
+        self.y = start_y
         
         # Clamp camera to grid bounds
         self._clamp()
