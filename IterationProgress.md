@@ -16,7 +16,10 @@
   - Status: COMPLETE ✓
   - Completed:
     - Created world/coordinate.py with Coordinate and Grid utilities
-    - Grid dimensions: 375 segments (horizontal) × 110 levels (vertical)
+    - Grid dimensions: 375 segments (horizontal) × 115 levels (vertical)
+    - **Basement levels: -5 to -1 (5 basement floors)**
+    - **Lobby floor: Level 0**
+    - **Main floors: 1 to 109**
     - Pixel scaling: 8 pixels per segment, 32 pixels per level
     - Created world/world_map.py with WorldMap class
     - Room placement, removal, and tracking system
@@ -28,17 +31,18 @@
     - Grid toggle with G key
 
 - [x] **Step 3: Empty Ground & Lobby B1** - Ground rendering, auto-lobby, grid overlay, construction mode
-  - Status: COMPLETE ✓
+  - Status: COMPLETE ✓ (UPDATED: Basement levels + Level 0 reserved for lobby)
   - Completed:
     - Created entities/room.py with RoomEntity base class
     - Room overlap detection and validation
     - Created entities/rooms/lobby.py with Lobby class
     - Default 4-segment wide lobby, costs 500/segment
-    - Lobby auto-placed at level 1 (center of grid)
-    - Ground rendering (brown rectangle at level 0)
+    - **Lobby must be placed on Level 0 only (was previously level 1)**
+    - **Lobby segments must be continuously connected (no gaps)**
+    - Basement floors rendering (levels -5 to -1) in brown color (139, 90, 43)
     - Room rendering system with borders and labels
     - Room storage and tracking in game
-    - Game initializes with default ground and lobby
+    - Game initializes with basement floors (level 0 reserved for lobby, no default lobby)
 
 ## Phase 2: Entity Data & Registry
 - [x] **Step 4: The Static Data Registry** - constants.py with ENTITY_DATA
@@ -53,6 +57,34 @@
     - Stress and satisfaction thresholds
     - Full documentation and notes on game mechanics
     - All data matches TechnicalDoc specifications
+    - **UPDATED: Grid height now 115 levels (-5 to 109) to support basements**
+    - **UPDATED: Lobby placement restriction to Level 0 only**
+    - **UPDATED: Metro station restriction to basement levels (-5 to -1)**
+
+## Phase 2.5: Basement Floor Requirements Implementation
+- [x] **Basement Floor System** - Support 5 basement levels with restrictions
+  - Status: COMPLETE ✓
+  - Completed:
+    - Updated coordinate system to support negative levels (-5 to -1)
+    - Grid height increased from 110 to 115 levels
+    - Added GRID_MIN_LEVEL (-5) and GRID_MAX_LEVEL (109) constants
+    - Created basement floor entities for levels -5 to -1 with brown color
+    - Basement floors initialized in game startup
+    - **Basement-only items restriction:**
+      - ✓ Metro Station (allowed)
+      - ✓ Stairs (allowed)
+      - ✓ Escalator (allowed)
+      - ✓ Elevator Shaft (allowed, spans multiple levels)
+      - ✗ All other items blocked from basement
+    - Service modules (housekeeping, security, medical) restricted to Level 0+
+    - Level 0 reserved exclusively for Lobby placement
+    - **Lobby connectivity validation:**
+      - ✓ Lobby segments must be continuously connected (no gaps)
+      - ✓ First lobby placement on Level 0 always valid
+      - ✓ Subsequent lobby segments must touch existing lobby
+    - Placement validator updated with 6 checks (was 4)
+    - Ghost room bounds checking updated for negative levels
+    - Game initialization updated (basement auto-created, no default lobby)
 
 ## Phase 3: UI & Construction Engine
 - [x] **Step 5: The Tool Window (HUD)** - Toolbox and World Details bar

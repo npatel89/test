@@ -6,7 +6,9 @@ from dataclasses import dataclass
 
 # Grid constants
 GRID_WIDTH = 375  # segments
-GRID_HEIGHT = 110  # levels (floors)
+GRID_HEIGHT = 115  # levels (floors) - ranges from -5 (basement) to 109 (top)
+GRID_MIN_LEVEL = -5  # Lowest level (deepest basement)
+GRID_MAX_LEVEL = 109  # Highest level (top floor)
 PIXELS_PER_SEGMENT = 8
 PIXELS_PER_LEVEL = 32
 
@@ -15,7 +17,7 @@ PIXELS_PER_LEVEL = 32
 class Coordinate:
     """Represents a coordinate in the grid (segment, level)"""
     segment: int  # 0-374 (horizontal)
-    level: int    # 0-109 (vertical, 0 is bottom, 109 is top)
+    level: int    # -5 to 109 (vertical, -5 is basement, 0 is lobby floor, 109 is top)
 
     def to_pixels(self) -> tuple[int, int]:
         """Convert grid coordinate to pixel coordinates"""
@@ -25,7 +27,7 @@ class Coordinate:
 
     def is_valid(self) -> bool:
         """Check if coordinate is within grid bounds"""
-        return 0 <= self.segment < GRID_WIDTH and 0 <= self.level < GRID_HEIGHT
+        return 0 <= self.segment < GRID_WIDTH and GRID_MIN_LEVEL <= self.level <= GRID_MAX_LEVEL
 
     def __repr__(self) -> str:
         return f"Coordinate(seg={self.segment}, level={self.level})"

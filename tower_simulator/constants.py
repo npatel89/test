@@ -191,11 +191,11 @@ ENTITY_DATA = {
         'cost': 1000000,
         'color': (50, 150, 50),
         'capacity': 500,  # Sims injected at start of day
-        'placement_level_min': 1,  # B1-B3 levels
-        'placement_level_max': 3,
+        'placement_level_min': -5,  # B1-B5 (basement levels)
+        'placement_level_max': -1,
         'income_type': 'none',
         'maintenance': 100000,  # Quarterly
-        'notes': 'Subterranean. Massive population booster. 3-level requirement.'
+        'notes': 'Subterranean. Basement levels only (-5 to -1). Massive population booster. 3-level requirement.',
     },
     
     # =========================================================================
@@ -211,7 +211,7 @@ ENTITY_DATA = {
         'capacity': None,  # Infinite
         'income_type': 'none',
         'maintenance_per_segment': 3,
-        'notes': 'Entry point for Sims. Level 1 only initially. Multi-level lobby possible.'
+        'notes': 'Entry point for Sims. Level 0 only. Must be continuously connected (no gaps).',
     },
     
     'elevator_shaft': {
@@ -329,7 +329,9 @@ SIMULATION_SPEED = 0.5  # Real seconds per game minute
 
 # Grid & World
 GRID_WIDTH = 375
-GRID_HEIGHT = 110
+GRID_HEIGHT = 115  # -5 (basement) to 109 (top)
+GRID_MIN_LEVEL = -5
+GRID_MAX_LEVEL = 109
 PIXELS_PER_SEGMENT = 8
 PIXELS_PER_LEVEL = 32
 

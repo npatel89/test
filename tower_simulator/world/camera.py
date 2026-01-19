@@ -2,7 +2,7 @@
 Camera system for viewport management
 """
 import pygame
-from tower_simulator.world.coordinate import Grid
+from tower_simulator.world.coordinate import Grid, GRID_MIN_LEVEL, GRID_MAX_LEVEL, PIXELS_PER_LEVEL
 
 
 class Camera:
@@ -17,8 +17,12 @@ class Camera:
         self.x = 0
         self.y = 0
         
-        # Get grid bounds
-        self.grid_width, self.grid_height = Grid.get_grid_size_pixels()
+        # Grid bounds in pixels
+        # X: 0 to (375 * 8) = 3000 pixels
+        # Y: (-5 * 32) to (109 * 32) = -160 to 3488 pixels
+        self.grid_width = Grid.WIDTH * PIXELS_PER_LEVEL
+        self.grid_min_y = GRID_MIN_LEVEL * PIXELS_PER_LEVEL  # -160 for level -5
+        self.grid_max_y = GRID_MAX_LEVEL * PIXELS_PER_LEVEL  # 3488 for level 109
         
         # Scroll speed in pixels per frame
         self.scroll_speed = 16
@@ -34,11 +38,11 @@ class Camera:
         if self.x + self.screen_width > self.grid_width:
             self.x = max(0, self.grid_width - self.screen_width)
         
-        # Clamp Y
-        if self.y < 0:
-            self.y = 0
-        if self.y + self.screen_height > self.grid_height:
-            self.y = max(0, self.grid_height - self.screen_height)
+        # Clamp Y (now allows negative values for basement levels)
+        if self.y < self.grid_min_y:
+            self.y = self.grid_min_y
+        if self.y + self.screen_height > self.grid_max_y:
+            self.y = max(self.grid_min_y, self.grid_max_y - self.screen_height)
 
     def handle_input(self, keys):
         """Handle camera movement from keyboard input"""

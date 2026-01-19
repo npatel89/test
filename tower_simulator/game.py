@@ -68,17 +68,22 @@ class TowerSimulatorGame:
         print("Controls: WASD to scroll, G to toggle grid, ESC to exit")
 
     def _initialize_default_layout(self):
-        """Initialize the default tower layout with ground only"""
-        # Create ground entity (spans full width at level 0)
-        ground = RoomEntity(
-            coordinate=Coordinate(0, 0),
-            width=Grid.WIDTH,
-            height=1,
-            room_type='ground',
-            cost=0,
-            color=(139, 90, 43)  # Brown
-        )
-        self.rooms.append(ground)
+        """Initialize the default tower layout with basement floors and ground lobby floor"""
+        # Create basement floors (levels -5 to -1) - brown color
+        basement_color = (139, 90, 43)  # Brown
+        for level in range(-5, 0):  # -5 to -1
+            basement_floor = RoomEntity(
+                coordinate=Coordinate(0, level),
+                width=Grid.WIDTH,
+                height=1,
+                room_type=f'basement_floor_level_{level}',
+                cost=0,
+                color=basement_color
+            )
+            self.rooms.append(basement_floor)
+        
+        # Note: Level 0 is reserved for LOBBY placement
+        # No default ground entity - level 0 is for player-placed lobby segments
         
         # Update validator with all rooms
         self.validator.update_rooms(self.rooms)
@@ -187,34 +192,12 @@ class TowerSimulatorGame:
                 pygame.draw.line(self.screen, color, (0, screen_y), (self.WIDTH, screen_y), 1)
 
     def draw_ground(self):
-        """Draw the ground at level 0"""
-        ground_color = (139, 90, 43)  # Brown color
-        
-        # Ground is at level 0
-        world_x, world_y = 0, 0
-        screen_x, screen_y = self.camera.world_to_screen(world_x, world_y)
-        
-        ground_width_px = Grid.WIDTH * Grid.PIXELS_PER_SEGMENT
-        ground_height_px = Grid.PIXELS_PER_LEVEL
-        
-        # Convert to screen coordinates
-        screen_width = ground_width_px
-        screen_height = ground_height_px
-        
-        # Draw ground rectangle
-        pygame.draw.rect(
-            self.screen,
-            ground_color,
-            (screen_x, screen_y, screen_width, screen_height)
-        )
-        
-        # Draw ground border
-        pygame.draw.rect(
-            self.screen,
-            (101, 67, 33),  # Darker brown
-            (screen_x, screen_y, screen_width, screen_height),
-            2
-        )
+        """
+        DEPRECATED: Level 0 is now reserved for LOBBY placement.
+        Basement floors are created as room entities and drawn via draw_rooms().
+        This method is kept for reference but no longer called.
+        """
+        pass
 
     def draw_rooms(self):
         """Draw all room entities"""
@@ -256,10 +239,7 @@ class TowerSimulatorGame:
         # Sky blue background
         self.screen.fill((135, 206, 235))
         
-        # Draw ground first (behind everything)
-        self.draw_ground()
-        
-        # Draw all rooms
+        # Draw all rooms (including basement floors)
         self.draw_rooms()
         
         # Draw ghost room if active

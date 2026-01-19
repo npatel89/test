@@ -3,7 +3,7 @@ Ghost room - preview of room being placed
 """
 import pygame
 from tower_simulator.entities.room import RoomEntity
-from tower_simulator.world.coordinate import Coordinate, Grid
+from tower_simulator.world.coordinate import Coordinate, Grid, GRID_MIN_LEVEL, GRID_MAX_LEVEL
 
 
 class GhostRoom:
@@ -27,7 +27,7 @@ class GhostRoom:
         
         # Clamp to grid bounds
         segment = max(0, min(segment, Grid.WIDTH - self.width))
-        level = max(0, min(level, Grid.HEIGHT - self.height))
+        level = max(GRID_MIN_LEVEL, min(level, GRID_MAX_LEVEL - self.height))
         
         self.coordinate = Coordinate(segment, level)
 
