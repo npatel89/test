@@ -115,8 +115,18 @@ class TowerSimulatorGame:
         if not self.ghost_room:
             return
         
-        if not self.ghost_room.can_place:
-            print(f"❌ Cannot place {self.ghost_room.room_type} at {self.ghost_room.coordinate}")
+        # Perform a final, logged validation check before placing
+        can_place_final, reason = self.validator.can_place(
+            self.ghost_room.room_type,
+            self.ghost_room.coordinate,
+            self.ghost_room.width,
+            self.ghost_room.height,
+            log_attempt=True  # Enable logging for this specific attempt
+        )
+        
+        if not can_place_final:
+            print(f"❌ Cannot place {self.ghost_room.room_type} at {self.ghost_room.coordinate} - Reason: {reason}")
+            # The ghost room is already red, so just returning is enough
             return
         
         # Get room type and entity data

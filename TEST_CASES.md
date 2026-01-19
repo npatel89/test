@@ -241,16 +241,11 @@ This document outlines all test cases, edge cases, and testing strategy for Towe
 
 ---
 
-## Known Issues Found by Tests
-1. ⚠️ Camera world_to_screen conversion initially incorrect - FIXED
-2. ⚠️ Level 0 position on screen - Test expectations updated
-3. 🔴 **CRITICAL: Constants.py Missing Data** 
-   - 18/19 entities missing `placement_level_min` and `placement_level_max`
-   - 1/19 entities (elevator_shaft) missing `cost`
-   - Basement items named with underscores (metro_station, elevator_shaft) not matching hardcoded strings (Metro, Elevator Shaft)
-4. 🔴 **PlacementValidator._is_within_bounds() broken for negative levels**
-   - Checks `0 <= coordinate.level` but levels go to -5
-   - Causes valid basement placements to fail
+## Known Issues Log
+- **[FIXED]** `Camera`: `world_to_screen` conversion was initially incorrect.
+- **[VERIFIED]** `Camera`: Test expectations for Level 0 position on screen were updated.
+- **[FIXED]** `constants.py`: Critical missing data. 18/19 entities were missing `placement_level_min/max` and `elevator_shaft` was missing `cost`. The file is now complete.
+- **[FIXED]** `PlacementValidator`: `_is_within_bounds()` was broken for negative levels. The logic now correctly handles basement levels using `GRID_MIN_LEVEL`.
 
 ---
 
