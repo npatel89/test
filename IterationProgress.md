@@ -114,12 +114,37 @@
       - Rooms snap to grid automatically
       - No room overlaps allowed
       - Rooms must be placed on valid surfaces (ground or other rooms)
-      - Special rules for Lobby (level 1 only), Cathedral (level 100), Metro (B1-B3)
+      - **UPDATED: Lobby restricted to Level 0, Metro to basement only**
+      - **UPDATED: 6-check validation system (bounds, basement, level, overlaps, surface, connectivity)**
     - Ghost room creation on tool selection
     - Real-time position updates as mouse moves
     - Validation feedback with visual indicators
-- [ ] **Step 7: The Building Action** - Click to place, fund deduction
-  - Status: NOT STARTED
+- [x] **Step 7: The Building Action** - Click to place, fund deduction
+  - Status: COMPLETE ✓
+  - Completed:
+    - Implemented `_place_room()` method for actual room placement
+    - Fund validation: checks player has sufficient funds before placing
+    - Cost calculation: handles per-segment costs (lobby) and fixed costs
+    - Room entity creation: factory pattern for different room types
+    - Game state updates: adds room to list, updates validator, deducts funds
+    - Placement feedback: console messages showing placement success and remaining funds
+    - Clear selection: resets ghost room and selected tool after placement
+    - **NEW: Lobby connectivity validation prevents disconnected segments**
+    - **NEW: Cost calculation handles variable-width items (lobby: 500/segment)**
+    - **NEW: Elevator shaft pricing (shaft + per-car costs)**
+
+## Phase 3.5: Camera & Viewport Improvements
+- [x] **Camera System Enhancements** - Proper scrolling and centering
+  - Status: COMPLETE ✓
+  - Completed:
+    - **FIXED: Camera now allows negative Y values** to view basement levels
+    - **FIXED: Camera scroll limits now respect grid boundaries correctly**
+    - Camera starts centered horizontally on the map
+    - Camera starts at basement level (y = GRID_MIN_LEVEL) vertically
+    - Level 0 visible near bottom of screen for tower building
+    - Smooth scrolling with WASD keys (16px/frame)
+    - Proper pixel calculations for grid bounds
+    - Basement floors (-5 to -1) fully viewable by scrolling down
 
 ## Phase 4: Time & Economics Simulation
 - [ ] **Step 8: The 12-Day Annual Clock** - TimeManager class
@@ -137,14 +162,63 @@
 
 ---
 
+## Foundation Ready for Phase 4
+✅ **Core systems complete:**
+- Game window and rendering pipeline
+- Grid system with basement and main tower levels
+- Room entity system with placement validation
+- UI toolbox and status bar
+- Building action (click to place, fund deduction)
+- Camera system with proper scrolling and centering
+- 19 entity types with complete specifications
+
+✅ **What Phase 4 needs:**
+- TimeManager: Track in-game days, quarters, and annual cycle
+- Revenue system: Collect income from placed buildings
+- Maintenance system: Deduct maintenance costs quarterly
+- Population management: Track sims in residential/office buildings
+- Rating system: Update star rating based on tower quality
+
+---
+
+## Key Implementation Files
+| File | Purpose |
+|------|---------|
+| [main.py](main.py) | Entry point |
+| [tower_simulator/game.py](tower_simulator/game.py) | Main game loop, rendering, input handling |
+| [tower_simulator/constants.py](tower_simulator/constants.py) | Game data registry (19 entity types) |
+| [tower_simulator/world/coordinate.py](tower_simulator/world/coordinate.py) | Coordinate system with basement support |
+| [tower_simulator/world/camera.py](tower_simulator/world/camera.py) | Viewport management and scrolling |
+| [tower_simulator/entities/room.py](tower_simulator/entities/room.py) | Room base class |
+| [tower_simulator/entities/rooms/lobby.py](tower_simulator/entities/rooms/lobby.py) | Lobby entity |
+| [tower_simulator/systems/placement_validator.py](tower_simulator/systems/placement_validator.py) | Placement validation rules |
+| [tower_simulator/ui/toolbox.py](tower_simulator/ui/toolbox.py) | Tool selection UI |
+| [tower_simulator/ui/ghost_room.py](tower_simulator/ui/ghost_room.py) | Building preview |
+| [tower_simulator/ui/status_bar.py](tower_simulator/ui/status_bar.py) | HUD display |
+
+---
+
 ## Notes & Decisions
 - **Python Version**: 3.12.10 (stable with Pygame)
 - **Game Engine**: Pygame 2.6.1 (CPU-based, simpler to work with)
 - **Target Resolution**: 1280x720
 - **Window Title**: Tower Simulator
 - **Virtual Environment**: venv312
-- **To Run Game**: `c:\dev\v2\venv312\Scripts\python.exe main.py`
-- **Coordinate System**: Y-axis inverted (ground at bottom, higher levels at top)
+- **To Run Game**: `venv312\Scripts\python.exe main.py`
+- **Coordinate System**: Y-axis inverted (basement at bottom, higher levels at top)
+  - Level -5 to -1: Basement floors (brown)
+  - Level 0: Lobby floor (empty, player-placed)
+  - Level 1 to 109: Main tower floors
 - **Initial Funds**: $2,000,000
 - **Starting Rating**: 1 Star
 - **Starting Population**: 0 Sims
+- **Grid Size**: 375 segments (horizontal) × 115 levels (vertical: -5 to 109)
+- **Grid Scale**: 8 pixels per segment, 32 pixels per level
+- **Basement System**: 
+  - 5 basement floors for underground structures
+  - Only Metro Station, Stairs, Escalator, Elevator allowed
+  - Basement color: Brown RGB(139, 90, 43)
+- **Git Configuration**:
+  - Remote: `develop` (GitHub: npatel89/test)
+  - .gitignore: Excludes __pycache__, *.pyc, venv312, IDE files
+  - .pyc files removed from tracking (Jan 18, 2026)
